@@ -31,24 +31,13 @@ router.get('/equipmentType', async (req, res) => {
   }
 });
 
-router.get('/users', async (req, res) => {
-  try {
-    const userRoles = await db
-      .from('user')
-      .select('*')
-      .innerJoin('role', 'user.role', 'role.id');
-    res.status(responseStatus.success).json(userRoles);
-  } catch (error) {
-    res.status(responseStatus.serverError).json(error);
-  }
-});
-
 router.get('/', async (req, res) => {
   try {
     const types = await db
       .from('equipment')
       .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id')
       .innerJoin('schoolLog', 'equipment.id', 'schoolLog.equipmentID')
+      .innerJoin('user', 'schoolLog.user', 'user.id')
       .select()
       .where('equipment.broken', 1);
     res.status(responseStatus.success).json(types);
@@ -96,8 +85,10 @@ router.get('/resolved', async (req, res) => {
       .innerJoin('role', 'user.role', 'role.id')
       .select()
       .where({ statusID: 1 });
+    console.log('TYPES', types);
     res.status(responseStatus.success).json(types);
   } catch (error) {
+    console.log('ERR', error);
     res
       .status(responseStatus.serverError)
       .json({ errorMessage: 'Unable to get that equipment ID.' });
