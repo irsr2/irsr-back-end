@@ -17,13 +17,56 @@ router.get('/', async (req, res) => {
   try {
     const logJoined = await db
       .from('boardLog')
-      .select('*')
+      .select(
+        'boardLog.id',
+        'boardLog.equipmentID',
+        'boardLog.status',
+        'boardLog.boardUser',
+        'boardLog.boardComment',
+        'boardLog.created_at',
+        'equipmentType.type',
+        'user.name',
+        'role.role'
+      )
       .innerJoin('equipmentType', 'boardLog.equipmentID', 'equipmentType.id')
       .innerJoin('user', 'boardLog.boardUser', 'user.id')
       .innerJoin('role', 'user.role', 'role.id')
       .innerJoin('statusTypes', 'boardLog.status', 'statusTypes.statusID');
     res.status(responseStatus.success).json(logJoined);
   } catch (error) {
+    res.status(responseStatus.serverError).json(error);
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const logJoined = await db
+      .from('boardLog')
+      .select(
+        'boardLog.id',
+        'boardLog.equipmentID',
+        'boardLog.status',
+        'boardLog.boardUser',
+        'boardLog.boardComment',
+        'boardLog.created_at',
+        'equipmentType.type',
+        'user.name',
+        'role.role'
+      )
+      .innerJoin('equipmentType', 'boardLog.equipmentID', 'equipmentType.id')
+      .innerJoin('user', 'boardLog.boardUser', 'user.id')
+      .innerJoin('role', 'user.role', 'role.id')
+      .where({ 'boardLog.id': id });
+    if (logJoined.length === 0) {
+      res
+        .status(responseStatus.badRequest)
+        .json({ message: 'Please enter a valid ID.' });
+    } else {
+      res.status(responseStatus.success).json(logJoined);
+    }
+  } catch (error) {
+    console.log('Err', error);
     res.status(responseStatus.serverError).json(error);
   }
 });
