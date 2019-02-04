@@ -31,9 +31,17 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const ids = await db('boardLog').insert(req.body);
-    res.status(responseStatus.postCreated).json(ids);
+    res
+      .status(responseStatus.postCreated)
+      .json({ message: `Added board log with id ${ids}` });
   } catch (error) {
-    console.log('ERROR', error);
+    if (error.errno === 19) {
+      res
+        .status(responseStatus.badRequest)
+        .json({ message: "You haven't entered the required information." });
+    } else {
+      res.status(responseStatus.serverError).json(error);
+    }
   }
 });
 

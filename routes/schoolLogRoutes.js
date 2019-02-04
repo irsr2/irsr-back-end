@@ -1,5 +1,4 @@
 const express = require('express');
-const helmet = require('helmet');
 const router = express.Router();
 
 const knex = require('knex');
@@ -31,10 +30,15 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const ids = await db('schoolLog').insert(req.body);
-    console.log('req body =', req.body);
     res.status(responseStatus.postCreated).json(`Added new log with is ${ids}`);
   } catch (error) {
-    console.log('ERROR', error);
+    if (error.errno === 19) {
+      res
+        .status(responseStatus.badRequest)
+        .json("You haven't entered the required information.");
+    } else {
+      res.status(responseStatus.serverError).json(error);
+    }
   }
 });
 

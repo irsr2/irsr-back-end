@@ -29,7 +29,13 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const singleEquipment = await db('equipment').where({ id });
-    res.status(responseStatus.success).json(singleEquipment);
+    if (singleEquipment.length === 0) {
+      res
+        .status(responseStatus.badRequest)
+        .json({ message: 'Please enter a valid ID.' });
+    } else {
+      res.status(responseStatus.success).json(singleEquipment);
+    }
   } catch (error) {
     res
       .status(responseStatus.serverError)
@@ -44,9 +50,15 @@ router.put('/:id', async (req, res) => {
     const myUpdate = await db('equipment')
       .where({ id })
       .update(changes);
-    console.log('Changes', changes);
-    console.log('my update', myUpdate);
-    res.status(responseStatus.success).json(myUpdate);
+    if (!myUpdate) {
+      res
+        .status(responseStatus.badRequest)
+        .json({ message: 'Please enter a valid ID.' });
+    } else {
+      res
+        .status(responseStatus.success)
+        .json({ messgae: `ID ${changes.id} has been updated.` });
+    }
   } catch (error) {
     res
       .status(responseStatus.serverError)
@@ -60,9 +72,16 @@ router.delete('/:id', async (req, res) => {
     const deleteResponse = await db('equipment')
       .where({ id })
       .delete();
-    res.status(responseStatus.success).json(deleteResponse);
+    if (!deleteResponse) {
+      res
+        .status(responseStatus.badRequest)
+        .json({ message: 'Please enter a valid ID.' });
+    } else {
+      res
+        .status(responseStatus.success)
+        .json({ messgae: `ID ${id} has been deleted.` });
+    }
   } catch (error) {
-    console.log('Err', error);
     res
       .status(responseStatus.serverError)
       .json({ errorMessage: 'Unable to delete that equipment.' });

@@ -1,5 +1,4 @@
 const express = require('express');
-const helmet = require('helmet');
 const router = express.Router();
 
 const knex = require('knex');
@@ -73,7 +72,11 @@ router.get('/singlePage/:id', async (req, res) => {
       .innerJoin('role', 'user.role', 'role.id')
       .select()
       .where({ 'equipment.id': id });
-    res.status(responseStatus.success).json(types);
+    if (types.length === 0) {
+      res.status(responseStatus.badRequest).json('Please enter a valid ID.');
+    } else {
+      res.status(responseStatus.success).json(types);
+    }
   } catch (error) {
     res
       .status(responseStatus.serverError)
@@ -93,13 +96,6 @@ router.get('/resolved', async (req, res) => {
       .innerJoin('role', 'user.role', 'role.id')
       .select()
       .where({ statusID: 1 });
-    // console.log('types', types[0].equipmentId);
-    // const resolvedIds = types.map(data => data.equipmentId);
-    // let resolvedData = []
-    // for (let i = 0; i < resolvedIds; i ++) {
-
-    // }
-    // console.log('resolved ids', resolvedIds);
     res.status(responseStatus.success).json(types);
   } catch (error) {
     res
