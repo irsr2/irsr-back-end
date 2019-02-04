@@ -1,0 +1,70 @@
+const express = require('express');
+const router = express.Router();
+
+const knex = require('knex');
+const knexConfig = require('../knexfile');
+const db = knex(knexConfig.development);
+
+const responseStatus = {
+  success: 200,
+  postCreated: 201,
+  badRequest: 400,
+  notFound: 404,
+  serverError: 500
+};
+
+router.get('/', async (req, res) => {
+  try {
+    const types = await db
+      .from('equipment')
+      .select('*')
+      .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id');
+    res.status(200).json(types);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const singleEquipment = await db('equipment').where({ id });
+    res.status(200).json(singleEquipment);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ errorMessage: 'Unable to get that piece of equipment.' });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const changes = req.body;
+    const { id } = req.params;
+    const myUpdate = await db('equipment')
+      .where({ id })
+      .update(changes);
+    console.log('Changes', changes);
+    console.log('my update', myUpdate);
+    res.status(200).json(myUpdate);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ errorMessage: 'Unable to update that piece of equipment.' });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteResponse = await db('equipment')
+      .where({ id })
+      .delete();
+    res.status(200).json(deleteResponse);
+  } catch (error) {
+    console.log('Err', error);
+    res.status(500).json({ errorMessage: 'Unable to delete that equipment.' });
+  }
+});
+
+module.exports = router;
