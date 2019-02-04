@@ -85,10 +85,8 @@ router.get('/resolved', async (req, res) => {
       .innerJoin('role', 'user.role', 'role.id')
       .select()
       .where({ statusID: 1 });
-    console.log('TYPES', types);
     res.status(responseStatus.success).json(types);
   } catch (error) {
-    console.log('ERR', error);
     res
       .status(responseStatus.serverError)
       .json({ errorMessage: 'Unable to get that equipment ID.' });
