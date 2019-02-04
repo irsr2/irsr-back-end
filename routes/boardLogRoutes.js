@@ -66,7 +66,6 @@ router.get('/:id', async (req, res) => {
       res.status(responseStatus.success).json(logJoined);
     }
   } catch (error) {
-    console.log('Err', error);
     res.status(responseStatus.serverError).json(error);
   }
 });

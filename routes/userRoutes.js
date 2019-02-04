@@ -32,7 +32,7 @@ router.get('/:id', async (req, res) => {
       .from('user')
       .select('*')
       .innerJoin('role', 'user.role', 'role.id')
-      .where({ id });
+      .where({ 'user.id': id });
     res.status(responseStatus.success).json(individualUser);
   } catch (error) {
     res.status(responseStatus.serverError).json(error);
