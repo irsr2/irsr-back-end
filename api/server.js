@@ -3,8 +3,6 @@ const helmet = require('helmet');
 
 const server = express();
 
-const db = require('../data/dbConfig');
-
 server.use(helmet());
 server.use(express.json());
 

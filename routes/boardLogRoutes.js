@@ -1,5 +1,4 @@
 const express = require('express');
-const helmet = require('helmet');
 const router = express.Router();
 
 const knex = require('knex');
@@ -23,17 +22,16 @@ router.get('/', async (req, res) => {
       .innerJoin('user', 'boardLog.boardUser', 'user.id')
       .innerJoin('role', 'user.role', 'role.id')
       .innerJoin('statusTypes', 'boardLog.status', 'statusTypes.statusID');
-    res.status(200).json(logJoined);
+    res.status(responseStatus.success).json(logJoined);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(responseStatus.serverError).json(error);
   }
 });
 
 router.post('/', async (req, res) => {
   try {
     const ids = await db('boardLog').insert(req.body);
-    console.log('IDS =', ids);
-    res.status(201).json(ids);
+    res.status(responseStatus.postCreated).json(ids);
   } catch (error) {
     console.log('ERROR', error);
   }

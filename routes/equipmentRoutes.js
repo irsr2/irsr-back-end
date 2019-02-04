@@ -19,9 +19,9 @@ router.get('/', async (req, res) => {
       .from('equipment')
       .select('*')
       .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id');
-    res.status(200).json(types);
+    res.status(responseStatus.success).json(types);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(responseStatus.serverError).json(error);
   }
 });
 
@@ -29,10 +29,10 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const singleEquipment = await db('equipment').where({ id });
-    res.status(200).json(singleEquipment);
+    res.status(responseStatus.success).json(singleEquipment);
   } catch (error) {
     res
-      .status(500)
+      .status(responseStatus.serverError)
       .json({ errorMessage: 'Unable to get that piece of equipment.' });
   }
 });
@@ -46,10 +46,10 @@ router.put('/:id', async (req, res) => {
       .update(changes);
     console.log('Changes', changes);
     console.log('my update', myUpdate);
-    res.status(200).json(myUpdate);
+    res.status(responseStatus.success).json(myUpdate);
   } catch (error) {
     res
-      .status(500)
+      .status(responseStatus.serverError)
       .json({ errorMessage: 'Unable to update that piece of equipment.' });
   }
 });
@@ -60,10 +60,12 @@ router.delete('/:id', async (req, res) => {
     const deleteResponse = await db('equipment')
       .where({ id })
       .delete();
-    res.status(200).json(deleteResponse);
+    res.status(responseStatus.success).json(deleteResponse);
   } catch (error) {
     console.log('Err', error);
-    res.status(500).json({ errorMessage: 'Unable to delete that equipment.' });
+    res
+      .status(responseStatus.serverError)
+      .json({ errorMessage: 'Unable to delete that equipment.' });
   }
 });
 

@@ -22,9 +22,9 @@ router.get('/', async (req, res) => {
       .innerJoin('equipmentType', 'schoolLog.equipmentID', 'equipmentType.id')
       .innerJoin('user', 'schoolLog.user', 'user.id')
       .innerJoin('role', 'user.role', 'role.id');
-    res.status(200).json(logJoined);
+    res.status(responseStatus.success).json(logJoined);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(responseStatus.serverError).json(error);
   }
 });
 
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
   try {
     const ids = await db('schoolLog').insert(req.body);
     console.log('req body =', req.body);
-    res.status(201).json(`Added new log with is ${ids}`);
+    res.status(responseStatus.postCreated).json(`Added new log with is ${ids}`);
   } catch (error) {
     console.log('ERROR', error);
   }

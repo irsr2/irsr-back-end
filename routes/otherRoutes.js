@@ -17,18 +17,18 @@ const responseStatus = {
 router.get('/statusTypes', async (req, res) => {
   try {
     const status = await db('statusTypes');
-    res.status(200).json(status);
+    res.status(responseStatus.success).json(status);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(responseStatus.serverError).json(error);
   }
 });
 
 router.get('/equipmentType', async (req, res) => {
   try {
     const status = await db('equipmentType');
-    res.status(200).json(status);
+    res.status(responseStatus.success).json(status);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(responseStatus.serverError).json(error);
   }
 });
 
@@ -38,9 +38,9 @@ router.get('/users', async (req, res) => {
       .from('user')
       .select('*')
       .innerJoin('role', 'user.role', 'role.id');
-    res.status(200).json(userRoles);
+    res.status(responseStatus.success).json(userRoles);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(responseStatus.serverError).json(error);
   }
 });
 
@@ -52,9 +52,11 @@ router.get('/', async (req, res) => {
       .innerJoin('schoolLog', 'equipment.id', 'schoolLog.equipmentID')
       .select()
       .where('equipment.broken', 1);
-    res.status(200).json(types);
+    res.status(responseStatus.success).json(types);
   } catch (error) {
-    res.status(500).json({ errorMessage: 'Unable to get equipment.' });
+    res
+      .status(responseStatus.serverError)
+      .json({ errorMessage: 'Unable to get equipment.' });
   }
 });
 
@@ -71,9 +73,11 @@ router.get('/singlePage/:id', async (req, res) => {
       .innerJoin('role', 'user.role', 'role.id')
       .select()
       .where({ 'equipment.id': id });
-    res.status(200).json(types);
+    res.status(responseStatus.success).json(types);
   } catch (error) {
-    res.status(500).json({ errorMessage: 'Unable to get that equipment ID.' });
+    res
+      .status(responseStatus.serverError)
+      .json({ errorMessage: 'Unable to get that equipment ID.' });
   }
 });
 
@@ -96,9 +100,11 @@ router.get('/resolved', async (req, res) => {
 
     // }
     // console.log('resolved ids', resolvedIds);
-    res.status(200).json(types);
+    res.status(responseStatus.success).json(types);
   } catch (error) {
-    res.status(500).json({ errorMessage: 'Unable to get that equipment ID.' });
+    res
+      .status(responseStatus.serverError)
+      .json({ errorMessage: 'Unable to get that equipment ID.' });
   }
 });
 
