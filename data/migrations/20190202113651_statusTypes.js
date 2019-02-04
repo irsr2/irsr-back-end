@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('statusTypes', tbl => {
     tbl.integer('statusID').notNullable();
-    tbl.string('type').notNullable();
+    tbl.string('statusFromBoard').notNullable();
   });
 };
 
