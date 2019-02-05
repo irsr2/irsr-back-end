@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const knex = require('knex');
-const knexConfig = require('../knexfile');
+const [knex, knexConfig] = [require('knex'), require('../knexfile')];
 const db = knex(knexConfig.development);
 
 const responseStatus = {

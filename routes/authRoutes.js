@@ -12,14 +12,7 @@ const jwt = require('jsonwebtoken');
 
 const { authenticate } = require('../auth/authenticate');
 
-// module.exports = server => {
-//   server.post('/api/register', register);
-//   //   server.post('/api/login', login);
-//   //   server.get('/api/jokes', authenticate, getJokes);
-// };
-
 function generateToken(user) {
-  console.log('TOKEN GEN');
   const payload = {
     username: user.username
   };
@@ -45,39 +38,14 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// router.post('/login', async (req, res) => {
-//   const creds = req.body;
-//   console.log('CREDS', creds);
-//   db('user')
-//     .where({ name: creds.name })
-//     .first()
-//     .then(user => {
-//       console.log('USER', user);
-//       console.log('COMPARE', bcrypt.compareSync('password', 'password'));
-//       if (user && bcrypt.compareSync(creds.password, user.password)) {
-//         const token = generateToken(user);
-//         console.log('TOKEN', token);
-//         res.status(200).json({ message: `Welcome ${user.name}`, token });
-//       } else {
-//         res.status(401).json({ message: 'Invalid username or password.' });
-//       }
-//     })
-//     .catch(err => res.status(500).json(err));
-// });
-
 router.post('/login', async (req, res) => {
   try {
     const creds = req.body;
-    console.log('CREDS', creds);
     const user = await db('user')
       .where({ email: creds.email })
       .first();
-    console.log('USER', user);
-    const password = 'password';
-    console.log('COMPARE', bcrypt.compareSync(password, password));
     if (user && bcrypt.compareSync(creds.password, user.password)) {
       const token = generateToken(user);
-      console.log('TOKEN', token);
       res.status(200).json({ message: `Welcome ${user.name}`, token });
     } else {
       res.status(401).json({ message: 'Invalid username or password.' });
@@ -87,34 +55,19 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.get('/', authenticate, async (req, res) => {
+  try {
+    const requestOptions = {
+      headers: { accept: 'application/json' }
+    };
+    const homePageRes = await axios.get(
+      'http://localhost:5000/',
+      requestOptions
+    );
+    res.status(200).json(homePageRes.data);
+  } catch (error) {
+    res.status(500).json({ errorMessage: 'Unable to get equipment.' });
+  }
+});
+
 module.exports = router;
-
-// function login(req, res) {
-//   const creds = req.body;
-//   db('users')
-//     .where({ username: creds.username })
-//     .first()
-//     .then(user => {
-//       if (user && bcrypt.compareSync(creds.password, user.password)) {
-//         const token = generateToken(user);
-//         res.status(200).json({ message: `Welcome ${user.username}`, token });
-//       } else {
-//         res.status(401).json({ message: 'You shall not pass!' });
-//       }
-//     })
-//     .catch(err => res.status(500).json(err));
-// }
-
-// function getJokes(req, res) {
-//   const requestOptions = {
-//     headers: { accept: 'application/json' }
-//   };
-//   axios
-//     .get('https://icanhazdadjoke.com/search', requestOptions)
-//     .then(response => {
-//       res.status(200).json(response.data.results);
-//     })
-//     .catch(err => {
-//       res.status(500).json({ message: 'Error Fetching Jokes', error: err });
-//     });
-// }
