@@ -4,8 +4,10 @@ exports.up = function(knex, Promise) {
     tbl
       .integer('type')
       .references('id')
-      .inTable('equipmentType');
-    tbl.boolean('broken');
+      .inTable('equipmentType')
+      .notNullable();
+    tbl.string('equipmentImage');
+    tbl.boolean('broken').notNullable();
   });
 };
 

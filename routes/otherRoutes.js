@@ -6,15 +6,9 @@ const db = knex(knexConfig.development);
 
 const { authenticate } = require('../auth/authenticate');
 
-const responseStatus = {
-  success: 200,
-  postCreated: 201,
-  badRequest: 400,
-  notFound: 404,
-  serverError: 500
-};
+const responseStatus = require('./responseStatus');
 
-router.get('/statusTypes', async (req, res) => {
+router.get('/statusTypes', authenticate, async (req, res) => {
   try {
     const status = await db('statusTypes');
     res.status(responseStatus.success).json(status);
@@ -23,7 +17,7 @@ router.get('/statusTypes', async (req, res) => {
   }
 });
 
-router.get('/equipmentType', async (req, res) => {
+router.get('/equipmentType', authenticate, async (req, res) => {
   try {
     const status = await db('equipmentType');
     res.status(responseStatus.success).json(status);
@@ -49,7 +43,7 @@ router.get('/', authenticate, async (req, res) => {
   }
 });
 
-router.get('/singlePage/:id', async (req, res) => {
+router.get('/singlePage/:id', authenticate, async (req, res) => {
   try {
     const { id } = req.params;
     const equipment = await db
@@ -105,7 +99,7 @@ router.get('/singlePage/:id', async (req, res) => {
   }
 });
 
-router.get('/resolved', async (req, res) => {
+router.get('/resolved', authenticate, async (req, res) => {
   try {
     const types = await db
       .from('equipment')

@@ -15,7 +15,7 @@ function authenticate(req, res, next) {
   if (token) {
     jwt.verify(token, jwtKey, (err, decoded) => {
       if (err) return res.status(401).json(err);
-      console.log('req.decoded first', req);
+      console.log('req.decoded first');
       req.decoded = decoded;
       console.log('req.decoded second', req.decoded);
       next();

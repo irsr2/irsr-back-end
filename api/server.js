@@ -3,6 +3,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const server = express();
 
+server.use('/uploads', express.static('uploads'));
 server.use(helmet());
 server.use(cors());
 server.use(express.json());
