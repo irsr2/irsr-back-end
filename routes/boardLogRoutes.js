@@ -7,13 +7,7 @@ const db = knex(knexConfig.development);
 
 const { authenticate } = require('../auth/authenticate');
 
-const responseStatus = {
-  success: 200,
-  postCreated: 201,
-  badRequest: 400,
-  notFound: 404,
-  serverError: 500
-};
+const responseStatus = require('./responseStatus');
 
 router.get('/', authenticate, async (req, res) => {
   try {

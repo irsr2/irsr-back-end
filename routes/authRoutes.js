@@ -3,12 +3,12 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 
-const axios = require('axios');
 const bcrypt = require('bcrypt');
 const knex = require('knex');
 const knexConfig = require('../knexfile');
 const db = knex(knexConfig.development);
 const jwt = require('jsonwebtoken');
+const responseStatus = require('./responseStatus');
 
 function generateToken(user) {
   const payload = {
@@ -29,10 +29,10 @@ router.post('/register', async (req, res) => {
     db('user')
       .insert(userInfo)
       .then(ids => {
-        res.status(201).json(ids);
+        res.status(responseStatus.postCreated).json(ids);
       });
   } catch (error) {
-    res.status(201).json(error);
+    res.status(responseStatus.serverError).json(error);
   }
 });
 
@@ -44,12 +44,18 @@ router.post('/login', async (req, res) => {
       .first();
     if (user && bcrypt.compareSync(creds.password, user.password)) {
       const token = generateToken(user);
-      res.status(200).json({ message: `Welcome ${user.name}`, token });
+      res
+        .status(responseStatus.success)
+        .json({ message: `Welcome ${user.name}`, token });
     } else {
-      res.status(401).json({ message: 'Invalid username or password.' });
+      res
+        .status(responseStatus.unauthorized)
+        .json({ message: 'Invalid username or password.' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Unable to complete this request.' });
+    res
+      .status(responseStatus.serverError)
+      .json({ message: 'Unable to complete this request.' });
   }
 });
 
