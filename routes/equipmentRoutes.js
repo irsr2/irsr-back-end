@@ -43,6 +43,29 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.post('/', async (req, res) => {
+  try {
+    const newEquipment = req.body;
+    if (
+      newEquipment.type &&
+      (newEquipment.broken === 0 || newEquipment.broken === 1)
+    ) {
+      const ids = await db('equipment').insert(newEquipment);
+      res
+        .status(responseStatus.postCreated)
+        .json({ message: `New equipmenet added with id: ${ids}` });
+    } else {
+      res.status(responseStatus.badRequest).json({
+        message: "Please enter the type of equipment and whether it's broken."
+      });
+    }
+  } catch (error) {
+    res
+      .status(responseStatus.serverError)
+      .json({ errorMessage: 'Unable to get that piece of equipment.' });
+  }
+});
+
 router.put('/:id', async (req, res) => {
   try {
     const changes = req.body;

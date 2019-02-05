@@ -51,20 +51,51 @@ router.get('/', async (req, res) => {
 router.get('/singlePage/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const types = await db
+    const equipment = await db
       .from('equipment')
+      .select()
       .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id')
-      .innerJoin('schoolLog', 'equipment.id', 'schoolLog.equipmentID')
-      .innerJoin('boardLog', 'equipment.id', 'boardLog.equipmentId')
-      .innerJoin('statusTypes', 'boardLog.status', 'statusTypes.statusID')
+      .where({ 'equipment.id': id });
+    const boardLog = await db
+      .from('boardLog')
+      .select(
+        'boardLog.id',
+        'boardLog.equipmentID',
+        'boardLog.status',
+        'boardLog.boardUser',
+        'boardLog.boardComment',
+        'boardLog.created_at',
+        'equipmentType.type',
+        'user.name',
+        'role.role'
+      )
+      .innerJoin('equipmentType', 'boardLog.equipmentID', 'equipmentType.id')
       .innerJoin('user', 'boardLog.boardUser', 'user.id')
       .innerJoin('role', 'user.role', 'role.id')
-      .select()
-      .where({ 'equipment.id': id });
-    if (types.length === 0) {
+      .where({ 'boardLog.equipmentID': id });
+    const schoolLog = await db
+      .from('schoolLog')
+      .select(
+        'schoolLog.id',
+        'schoolLog.equipmentID',
+        'schoolLog.broken',
+        'schoolLog.user',
+        'schoolLog.comment',
+        'schoolLog.created_at',
+        'equipmentType.type',
+        'user.name',
+        'role.role'
+      )
+      .innerJoin('equipmentType', 'schoolLog.equipmentID', 'equipmentType.id')
+      .innerJoin('user', 'schoolLog.user', 'user.id')
+      .innerJoin('role', 'user.role', 'role.id')
+      .where({ 'schoolLog.equipmentID': id });
+    if (equipment.length === 0) {
       res.status(responseStatus.badRequest).json('Please enter a valid ID.');
     } else {
-      res.status(responseStatus.success).json(types);
+      res
+        .status(responseStatus.success)
+        .json({ equipment, boardLog, schoolLog });
     }
   } catch (error) {
     res
