@@ -69,29 +69,22 @@ router.post(
   authenticate,
   async (req, res) => {
     try {
-      console.log('FROM POST', req.file);
-      let newEquipment = req.body;
-      console.log('NEW', newEquipment);
-      const equipmentImage = req.file.path;
-      console.log('EQ path', JSON.stringify(equipmentImage));
-      let answer = {
-        type: newEquipment.type,
-        broken: newEquipment.broken,
-        equipmentImage: equipmentImage
+      const newEquipment = {
+        type: req.body.type,
+        broken: req.body.broken,
+        equipmentImage: req.file.path
       };
-      console.log('ANSWER = ', answer);
       if (!newEquipment.type || newEquipment.broken === undefined) {
         res.status(responseStatus.badRequest).json({
           message: "Please enter the type of equipment and whether it's broken."
         });
       } else {
-        const ids = await db('equipment').insert(answer);
+        const ids = await db('equipment').insert(newEquipment);
         res
           .status(responseStatus.postCreated)
           .json({ message: `New equipmenet added with id: ${ids}` });
       }
     } catch (error) {
-      console.log('ERR', error);
       res
         .status(responseStatus.serverError)
         .json({ errorMessage: 'Unable to get that piece of equipment.' });
