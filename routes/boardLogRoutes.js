@@ -5,6 +5,8 @@ const knex = require('knex');
 const knexConfig = require('../knexfile');
 const db = knex(knexConfig.development);
 
+const { authenticate } = require('../auth/authenticate');
+
 const responseStatus = {
   success: 200,
   postCreated: 201,
@@ -13,7 +15,7 @@ const responseStatus = {
   serverError: 500
 };
 
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   try {
     const logJoined = await db
       .from('boardLog')
@@ -38,7 +40,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, async (req, res) => {
   try {
     const { id } = req.params;
     const logJoined = await db
@@ -70,7 +72,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const ids = await db('boardLog').insert(req.body);
     res

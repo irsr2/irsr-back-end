@@ -10,8 +10,6 @@ const knexConfig = require('../knexfile');
 const db = knex(knexConfig.development);
 const jwt = require('jsonwebtoken');
 
-const { authenticate } = require('../auth/authenticate');
-
 function generateToken(user) {
   const payload = {
     username: user.username
@@ -52,21 +50,6 @@ router.post('/login', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: 'Unable to complete this request.' });
-  }
-});
-
-router.get('/', authenticate, async (req, res) => {
-  try {
-    const requestOptions = {
-      headers: { accept: 'application/json' }
-    };
-    const homePageRes = await axios.get(
-      'http://localhost:5000/',
-      requestOptions
-    );
-    res.status(200).json(homePageRes.data);
-  } catch (error) {
-    res.status(500).json({ errorMessage: 'Unable to get equipment.' });
   }
 });
 

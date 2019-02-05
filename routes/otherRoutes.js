@@ -4,6 +4,8 @@ const router = express.Router();
 const [knex, knexConfig] = [require('knex'), require('../knexfile')];
 const db = knex(knexConfig.development);
 
+const { authenticate } = require('../auth/authenticate');
+
 const responseStatus = {
   success: 200,
   postCreated: 201,
@@ -30,7 +32,7 @@ router.get('/equipmentType', async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   try {
     const types = await db
       .from('equipment')
