@@ -56,7 +56,6 @@ router.get('/:id', authenticate, async (req, res) => {
       res.status(responseStatus.success).json(singleEquipment);
     }
   } catch (error) {
-    console.log('ERR', error);
     res
       .status(responseStatus.serverError)
       .json({ errorMessage: 'Unable to get that piece of equipment.' });
@@ -69,16 +68,24 @@ router.post(
   authenticate,
   async (req, res) => {
     try {
-      const newEquipment = {
-        type: req.body.type,
-        broken: req.body.broken,
-        equipmentImage: req.file.path
-      };
-      if (!newEquipment.type || newEquipment.broken === undefined) {
-        res.status(responseStatus.badRequest).json({
-          message: "Please enter the type of equipment and whether it's broken."
-        });
+      if (req.file === undefined) {
+        if (!req.body.type || !req.body.broken) {
+          res.status(responseStatus.badRequest).json({
+            message:
+              "Please enter the type of equipment and whether it's broken."
+          });
+        } else {
+          const ids = await db('equipment').insert(req.body);
+          res
+            .status(responseStatus.postCreated)
+            .json({ message: `New equipmenet added with id: ${ids}` });
+        }
       } else {
+        const newEquipment = {
+          type: req.body.type,
+          broken: req.body.broken,
+          equipmentImage: req.file.path
+        };
         const ids = await db('equipment').insert(newEquipment);
         res
           .status(responseStatus.postCreated)
