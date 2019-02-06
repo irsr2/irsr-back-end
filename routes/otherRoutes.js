@@ -33,7 +33,17 @@ router.get('/', authenticate, async (req, res) => {
       .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id')
       .innerJoin('schoolLog', 'equipment.id', 'schoolLog.equipmentID')
       .innerJoin('user', 'schoolLog.user', 'user.id')
-      .select()
+      .innerJoin('role', 'user.role', 'role.id')
+      .select(
+        'equipmentType.id',
+        'equipment.id',
+        'equipment.type',
+        'equipment.equipmentImage',
+        'equipment.broken',
+        'user.name',
+        'user.email',
+        'role.role'
+      )
       .where('equipment.broken', 1);
     res.status(responseStatus.success).json(types);
   } catch (error) {
