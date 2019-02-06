@@ -23,6 +23,7 @@ function generateToken(user) {
 
 router.post('/register', async (req, res) => {
   try {
+    console.log("We're in");
     const userInfo = req.body;
     const hash = bcrypt.hashSync(userInfo.password, 12);
     userInfo.password = hash;
@@ -32,6 +33,7 @@ router.post('/register', async (req, res) => {
         res.status(responseStatus.postCreated).json(ids);
       });
   } catch (error) {
+    console.log('ERR', err);
     res.status(responseStatus.serverError).json(error);
   }
 });

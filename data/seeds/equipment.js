@@ -8,32 +8,32 @@ exports.seed = function(knex, Promise) {
         {
           type: 1,
           broken: false,
-          equipmentImage: 'uploads/2019-02-05T21:49:11.499ZTV.jpg'
+          equipmentImage: 'uploads/1549471080160TV.jpg'
         },
         {
           type: 1,
           broken: false,
-          equipmentImage: 'uploads/2019-02-05T21:55:46.502Zserver.jpeg'
+          equipmentImage: 'uploads/1549471156180server.jpeg'
         },
         {
           type: 3,
           broken: false,
-          equipmentImage: 'uploads/2019-02-05T21:56:35.738Zrouter.jpg'
+          equipmentImage: 'uploads/1549471074378router.jpg'
         },
         {
           type: 5,
           broken: true,
-          equipmentImage: 'uploads/2019-02-05T21:57:28.087Ztablet.jpeg'
+          equipmentImage: 'uploads/1549471064845tablet.jpeg'
         },
         {
           type: 2,
           broken: false,
-          equipmentImage: 'uploads/2019-02-05T21:58:18.980Zhdmi.jpeg'
+          equipmentImage: 'uploads/1549470979089hdmi.jpeg'
         },
         {
           type: 4,
           broken: true,
-          equipmentImage: 'uploads/2019-02-05T21:59:05.612Zchromebook.jpg'
+          equipmentImage: 'uploads/1549470745121chromebook.jpg'
         }
       ]);
     });

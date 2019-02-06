@@ -119,4 +119,17 @@ router.get('/resolved', authenticate, async (req, res) => {
   }
 });
 
+router.post('/stripey', (req, res) => {
+  var stripe = Stripe('pk_test_Y6iNnz4ImmbwJDcFA982Hahf');
+  var elements = stripe.elements();
+
+  var card = elements.create('card');
+  card.mount('#card-element');
+
+  var promise = stripe.createToken(card);
+  promise.then(function(result) {
+    // result.token is the card token.
+  });
+});
+
 module.exports = router;
