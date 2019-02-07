@@ -37,35 +37,6 @@ router.get('/', authenticate, async (req, res) => {
   }
 });
 
-// router.get('/', authenticate, async (req, res) => {
-//   try {
-//     const types = await db
-//       .from('equipment')
-//       // .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id')
-//       // .innerJoin('schoolLog', 'equipment.id', 'schoolLog.equipmentId')
-//       // .innerJoin('user', 'schoolLog.user', 'user.id')
-//       // .innerJoin('role', 'user.role', 'role.id')
-//       .select
-//       // 'equipmentType.id',
-//       // 'equipment.id',
-//       // 'equipmentType.type',
-//       // 'equipment.equipmentImage',
-//       // 'equipment.broken',
-//       // 'user.name',
-//       // 'user.email',
-//       // 'role.role'
-//       ()
-//       .where('equipment.broken', 1);
-//     console.log('TYPES', types);
-//     res.status(responseStatus.success).json(types);
-//   } catch (error) {
-//     console.log('ERR', error);
-//     res
-//       .status(responseStatus.serverError)
-//       .json({ errorMessage: 'Unable to get equipment.' });
-//   }
-// });
-
 router.get('/singlePage/:id', authenticate, async (req, res) => {
   try {
     const { id } = req.params;

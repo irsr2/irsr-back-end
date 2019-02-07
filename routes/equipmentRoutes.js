@@ -3,10 +3,10 @@ const router = express.Router();
 const multer = require('multer');
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function(req, file, cb) {
     cb(null, './uploads/');
   },
-  filename: function (req, file, cb) {
+  filename: function(req, file, cb) {
     cb(null, Date.now() + file.originalname);
   }
 });
@@ -105,10 +105,8 @@ router.put(
       const { id } = req.params;
       if (req.file === undefined) {
         let update = {};
-        if (req.body.type)
-          update.type = req.body.type;
-        if (req.body.broken !== undefined)
-          update.broken = req.body.broken;
+        if (req.body.type) update.type = req.body.type;
+        if (req.body.broken !== undefined) update.broken = req.body.broken;
 
         const ids = await db('equipment')
           .where({ id })
