@@ -24,8 +24,14 @@ function generateToken(user) {
 router.post('/register', async (req, res) => {
   try {
     const userInfo = req.body;
-    const emailMatches = await db.from('user').select('user.email').where({ 'user.email' : userInfo.email });
-    const nameMatches = await db.from('user').select('user.name').where({ 'user.name' : userInfo.name });
+    const emailMatches = await db
+      .from('user')
+      .select('user.email')
+      .where({ 'user.email': userInfo.email });
+    const nameMatches = await db
+      .from('user')
+      .select('user.name')
+      .where({ 'user.name': userInfo.name });
 
     if (emailMatches.length > 0) {
       res.status(responseStatus.badRequest).json({
@@ -42,14 +48,14 @@ router.post('/register', async (req, res) => {
       });
       return;
     }
-    
+
     userInfo.password = bcrypt.hashSync(userInfo.password, 12);
 
     db('user')
-        .insert(userInfo)
-        .then(ids => {
-          res.status(responseStatus.postCreated).json(ids);
-        });
+      .insert(userInfo)
+      .then(ids => {
+        res.status(responseStatus.postCreated).json(ids);
+      });
   } catch (error) {
     res.status(responseStatus.serverError).json(error);
   }
@@ -63,12 +69,10 @@ router.post('/login', async (req, res) => {
         userid: 'user.id',
         username: 'user.name',
         userrole: 'user.role',
-        password: 'user.password',
+        password: 'user.password'
       })
       .where({ email: creds.email })
       .first();
-
-    console.log(`${creds.password} and ${query.password}`);
 
     if (query && bcrypt.compareSync(creds.password, query.password)) {
       const token = generateToken(query);
