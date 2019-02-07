@@ -97,53 +97,53 @@ router.post(
   }
 );
 
-// router.put(
-//   '/:id',
-//   upload.single('equipmentImage'),
-//   authenticate,
-//   async (req, res) => {
-//     try {
-//       const { id } = req.params;
-//       if (req.file === undefined) {
-//         if (!req.body.type || !req.body.broken) {
-//           res.status(responseStatus.badRequest).json({
-//             message:
-//               "Please enter the type of equipment and whether it's broken."
-//           });
-//         } else {
-//           const ids = await db('equipment')
-//             .where({ id })
-//             .update(req.body);
-//           res
-//             .status(responseStatus.postCreated)
-//             .json({ message: `Equipment has been updated.` });
-//         }
-//       } else {
-//         const newEquipment = {
-//           type: req.body.type,
-//           broken: req.body.broken,
-//           equipmentImage: req.file.path
-//         };
-//         const myUpdate = await db('equipment')
-//           .where({ id })
-//           .update(newEquipment);
-//         if (!myUpdate) {
-//           res
-//             .status(responseStatus.badRequest)
-//             .json({ message: 'Please enter a valid ID.' });
-//         } else {
-//           res
-//             .status(responseStatus.success)
-//             .json({ messgae: `Equipment has been updated.` });
-//         }
-//       }
-//     } catch (error) {
-//       res
-//         .status(responseStatus.serverError)
-//         .json({ errorMessage: 'Unable to update that piece of equipment.' });
-//     }
-//   }
-// );
+router.put(
+  '/:id',
+  upload.single('equipmentImage'),
+  authenticate,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      if (req.file === undefined) {
+        if (!req.body.type || req.body.broken === undefined) {
+          res.status(responseStatus.badRequest).json({
+            message:
+              "Please enter the type of equipment and whether it's broken."
+          });
+        } else {
+          const ids = await db('equipment')
+            .where({ id })
+            .update(req.body);
+          res
+            .status(responseStatus.postCreated)
+            .json({ message: `Equipment has been updated.` });
+        }
+      } else {
+        const newEquipment = {
+          type: req.body.type,
+          broken: req.body.broken,
+          equipmentImage: req.file.path
+        };
+        const myUpdate = await db('equipment')
+          .where({ id })
+          .update(newEquipment);
+        if (!myUpdate) {
+          res
+            .status(responseStatus.badRequest)
+            .json({ message: 'Please enter a valid ID.' });
+        } else {
+          res
+            .status(responseStatus.success)
+            .json({ messgae: `Equipment has been updated.` });
+        }
+      }
+    } catch (error) {
+      res
+        .status(responseStatus.serverError)
+        .json({ errorMessage: 'Unable to update that piece of equipment.' });
+    }
+  }
+);
 
 router.delete('/:id', authenticate, async (req, res) => {
   try {
