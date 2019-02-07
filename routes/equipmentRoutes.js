@@ -89,7 +89,6 @@ router.post(
           .json({ message: `New equipmenet added with id: ${ids}` });
       }
     } catch (error) {
-      console.log('ERR', error);
       res
         .status(responseStatus.serverError)
         .json({ errorMessage: 'Unable to add that equipment.' });
