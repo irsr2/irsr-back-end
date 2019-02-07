@@ -59,7 +59,6 @@ router.get('/singlePage/:id', authenticate, async (req, res) => {
     const equipment = await db
       .from('equipment')
       .select()
-      .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id')
       .where({ 'equipment.id': id });
     const boardLog = await db
       .from('boardLog')
