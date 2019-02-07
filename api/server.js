@@ -21,8 +21,8 @@ server.use('/equipment', equipmentRoutes);
 server.use('/boardLog', boardLogRoutes);
 server.use('/schoolLog', schoolLogRoutes);
 server.use('/users', userRoutes);
-server.use('/', otherRoutes);
 server.use('/api', authRoutes);
+server.use('/', otherRoutes);
 
 configureRoutes(server);
 
