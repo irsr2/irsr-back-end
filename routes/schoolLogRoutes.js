@@ -15,7 +15,7 @@ router.get('/', authenticate, async (req, res) => {
       .from('schoolLog')
       .select(
         'schoolLog.id',
-        'schoolLog.equipmentID',
+        'schoolLog.equipmentId',
         'schoolLog.broken',
         'schoolLog.user',
         'schoolLog.comment',
@@ -24,7 +24,7 @@ router.get('/', authenticate, async (req, res) => {
         'user.name',
         'role.role'
       )
-      .innerJoin('equipmentType', 'schoolLog.equipmentID', 'equipmentType.id')
+      .innerJoin('equipmentType', 'schoolLog.equipmentId', 'equipmentType.id')
       .innerJoin('user', 'schoolLog.user', 'user.id')
       .innerJoin('role', 'user.role', 'role.id');
     res.status(responseStatus.success).json(logJoined);
@@ -40,7 +40,7 @@ router.get('/:id', authenticate, async (req, res) => {
       .from('schoolLog')
       .select(
         'schoolLog.id',
-        'schoolLog.equipmentID',
+        'schoolLog.equipmentId',
         'schoolLog.broken',
         'schoolLog.user',
         'schoolLog.comment',
@@ -49,7 +49,7 @@ router.get('/:id', authenticate, async (req, res) => {
         'user.name',
         'role.role'
       )
-      .innerJoin('equipmentType', 'schoolLog.equipmentID', 'equipmentType.id')
+      .innerJoin('equipmentType', 'schoolLog.equipmentId', 'equipmentType.id')
       .innerJoin('user', 'schoolLog.user', 'user.id')
       .innerJoin('role', 'user.role', 'role.id')
       .where({ 'schoolLog.id': id });

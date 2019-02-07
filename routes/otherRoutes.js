@@ -31,7 +31,7 @@ router.get('/', authenticate, async (req, res) => {
     const types = await db
       .from('equipment')
       .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id')
-      .innerJoin('schoolLog', 'equipment.id', 'schoolLog.equipmentID')
+      .innerJoin('schoolLog', 'equipment.id', 'schoolLog.equipmentId')
       .innerJoin('user', 'schoolLog.user', 'user.id')
       .innerJoin('role', 'user.role', 'role.id')
       .select(
@@ -64,36 +64,33 @@ router.get('/singlePage/:id', authenticate, async (req, res) => {
       .from('boardLog')
       .select(
         'boardLog.id',
-        'boardLog.equipmentID',
+        'boardLog.equipmentId',
         'boardLog.status',
         'boardLog.boardUser',
         'boardLog.boardComment',
         'boardLog.created_at',
-        'equipmentType.type',
         'user.name',
         'role.role'
       )
-      .innerJoin('equipmentType', 'boardLog.equipmentID', 'equipmentType.id')
       .innerJoin('user', 'boardLog.boardUser', 'user.id')
       .innerJoin('role', 'user.role', 'role.id')
-      .where({ 'boardLog.equipmentID': id });
+      .where({ 'boardLog.equipmentId': id });
     const schoolLog = await db
       .from('schoolLog')
       .select(
         'schoolLog.id',
-        'schoolLog.equipmentID',
+        'schoolLog.equipmentId',
         'schoolLog.broken',
         'schoolLog.user',
         'schoolLog.comment',
         'schoolLog.created_at',
-        'equipmentType.type',
         'user.name',
         'role.role'
       )
-      .innerJoin('equipmentType', 'schoolLog.equipmentID', 'equipmentType.id')
       .innerJoin('user', 'schoolLog.user', 'user.id')
       .innerJoin('role', 'user.role', 'role.id')
-      .where({ 'schoolLog.equipmentID': id });
+      .where({ 'schoolLog.equipmentId': id });
+      
     if (equipment.length === 0) {
       res.status(responseStatus.badRequest).json('Please enter a valid ID.');
     } else {
@@ -113,7 +110,7 @@ router.get('/resolved', authenticate, async (req, res) => {
     const types = await db
       .from('equipment')
       .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id')
-      .innerJoin('schoolLog', 'equipment.id', 'schoolLog.equipmentID')
+      .innerJoin('schoolLog', 'equipment.id', 'schoolLog.equipmentId')
       .innerJoin('boardLog', 'equipment.id', 'boardLog.equipmentId')
       .innerJoin('statusTypes', 'boardLog.status', 'statusTypes.statusID')
       .innerJoin('user', 'boardLog.boardUser', 'user.id')
@@ -122,7 +119,7 @@ router.get('/resolved', authenticate, async (req, res) => {
         'equipment.id',
         'equipmentType.type',
         'equipment.broken',
-        'schoolLog.equipmentID',
+        'schoolLog.equipmentId',
         'role.role'
       )
       .where({ statusID: 1 });
