@@ -41,12 +41,11 @@ router.post('/login', async (req, res) => {
     const creds = req.body;
     const user = await db('user')
       .where({ email: creds.email })
+      .innerJoin('role', 'user.role', 'role.id')
       .first();
     if (user && bcrypt.compareSync(creds.password, user.password)) {
       const token = generateToken(user);
-      res
-        .status(responseStatus.success)
-        .json({ message: `Welcome ${user.name}`, token });
+      res.status(responseStatus.success).json({ token, user });
     } else {
       res
         .status(responseStatus.unauthorized)
