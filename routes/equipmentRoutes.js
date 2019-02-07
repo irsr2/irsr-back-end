@@ -95,7 +95,6 @@ router.post(
     }
   }
 );
-
 router.put(
   '/:id',
   upload.single('equipmentImage'),
@@ -140,7 +139,6 @@ router.put(
     }
   }
 );
-
 router.delete('/:id', authenticate, async (req, res) => {
   try {
     const { id } = req.params;

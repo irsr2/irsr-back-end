@@ -23,7 +23,7 @@ server.use('/schoolLog', schoolLogRoutes);
 server.use('/users', userRoutes);
 server.use('/api', authRoutes);
 server.use('/', otherRoutes);
-
+//
 configureRoutes(server);
 
 module.exports = server;
