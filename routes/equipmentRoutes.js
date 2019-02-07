@@ -25,18 +25,6 @@ const db = knex(knexConfig.development);
 const { authenticate } = require('../auth/authenticate');
 const responseStatus = require('./responseStatus');
 
-router.get('/', authenticate, async (req, res) => {
-  try {
-    const types = await db
-      .from('equipment')
-      .select()
-      .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id');
-    res.status(responseStatus.success).json(types);
-  } catch (error) {
-    res.status(responseStatus.serverError).json(error);
-  }
-});
-
 router.get('/:id', authenticate, async (req, res) => {
   try {
     const { id } = req.params;
@@ -69,7 +57,7 @@ router.post(
   async (req, res) => {
     try {
       if (req.file === undefined) {
-        if (!req.body.type || !req.body.broken) {
+        if (!req.body.type || req.body.broken === undefined) {
           res.status(responseStatus.badRequest).json({
             message:
               "Please enter the type of equipment and whether it's broken."
@@ -78,7 +66,7 @@ router.post(
           const ids = await db('equipment').insert(req.body);
           res
             .status(responseStatus.postCreated)
-            .json({ message: `New equipmenet added with id: ${ids}` });
+            .json({ message: `Equipment with the id ${ids} has been added.` });
         }
       } else {
         const newEquipment = {
@@ -92,12 +80,41 @@ router.post(
           .json({ message: `New equipmenet added with id: ${ids}` });
       }
     } catch (error) {
+      console.log('ERR', error);
       res
         .status(responseStatus.serverError)
-        .json({ errorMessage: 'Unable to get that piece of equipment.' });
+        .json({ errorMessage: 'Unable to add that equipment.' });
     }
   }
 );
+
+// router.post('/', async (req, res) => {
+//   try {
+//     const ids = await db('equipment').insert(req.body);
+//     res
+//       .status(responseStatus.postCreated)
+//       .json({ message: `New equipmenet added with id ${ids}.` });
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+// });
+
+router.get('/', authenticate, async (req, res) => {
+  try {
+    const types = await db
+      .from('equipment')
+      .select(
+        'equipment.id',
+        'equipmentType.type',
+        'equipment.equipmentImage',
+        'equipment.broken'
+      )
+      .innerJoin('equipmentType', 'equipment.id', 'equipmentType.id');
+    res.status(responseStatus.success).json(types);
+  } catch (error) {
+    res.status(responseStatus.serverError).json(error);
+  }
+});
 
 // router.put(
 //   '/:id',

@@ -166,7 +166,7 @@ router.get('/resolved', authenticate, async (req, res) => {
     //   .innerJoin('user', 'schoolLog.user', 'user.id')
     //   .innerJoin('role', 'user.role', 'role.id')
     //   .where({ 'schoolLog.equipmentID': id });
-    res.status(responseStatus.success).json([equipment, schoolLog, board]);
+    res.status(responseStatus.success).json(types);
   } catch (error) {
     console.log('ERR', error);
     res

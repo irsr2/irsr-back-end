@@ -68,7 +68,7 @@ router.get('/:id', authenticate, async (req, res) => {
 router.post('/', authenticate, async (req, res) => {
   try {
     const ids = await db('schoolLog').insert(req.body);
-    res.status(responseStatus.postCreated).json(`Added new log with is ${ids}`);
+    res.status(responseStatus.postCreated).json(`Added new log with ID ${ids}`);
   } catch (error) {
     if (error.errno === 19) {
       res
