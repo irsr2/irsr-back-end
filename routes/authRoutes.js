@@ -24,22 +24,32 @@ function generateToken(user) {
 router.post('/register', async (req, res) => {
   try {
     const userInfo = req.body;
-    const hash = bcrypt.hashSync(userInfo.password, 12);
-    const users = await db('user');
-    userInfo.password = hash;
-    const mapped = users.map(user => user.email);
-    if (mapped.includes(userInfo.email)) {
+    const emailMatches = await db.from('user').select('user.email').where({ 'user.email' : userInfo.email });
+    const nameMatches = await db.from('user').select('user.name').where({ 'user.name' : userInfo.name });
+
+    if (emailMatches.length > 0) {
+      res.status(responseStatus.badRequest).json({
+        message:
+          'That email already exists. Please login or use a different email.'
+      });
+      return;
+    }
+
+    if (nameMatches.length > 0) {
       res.status(responseStatus.badRequest).json({
         message:
           'That username already exists. Please login or use a different username.'
       });
-    } else {
-      db('user')
+      return;
+    }
+    
+    userInfo.password = bcrypt.hashSync(userInfo.password, 12);
+
+    db('user')
         .insert(userInfo)
         .then(ids => {
           res.status(responseStatus.postCreated).json(ids);
         });
-    }
   } catch (error) {
     res.status(responseStatus.serverError).json(error);
   }
@@ -48,12 +58,25 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const creds = req.body;
-    const user = await db('user')
+    const query = await db('user')
+      .select({
+        userid: 'user.id',
+        username: 'user.name',
+        userrole: 'user.role',
+        password: 'user.password',
+      })
       .where({ email: creds.email })
-      .innerJoin('role', 'user.role', 'role.id')
       .first();
-    if (user && bcrypt.compareSync(creds.password, user.password)) {
-      const token = generateToken(user);
+
+    console.log(`${creds.password} and ${query.password}`);
+
+    if (query && bcrypt.compareSync(creds.password, query.password)) {
+      const token = generateToken(query);
+      const user = {
+        id: query.userid,
+        name: query.username,
+        role: query.userrole
+      };
       res.status(responseStatus.success).json({ token, user });
     } else {
       res

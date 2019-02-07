@@ -15,7 +15,7 @@ router.get('/', authenticate, async (req, res) => {
       .from('boardLog')
       .select(
         'boardLog.id',
-        'boardLog.equipmentID',
+        'boardLog.equipmentId',
         'boardLog.status',
         'boardLog.boardUser',
         'boardLog.boardComment',
@@ -24,7 +24,7 @@ router.get('/', authenticate, async (req, res) => {
         'user.name',
         'role.role'
       )
-      .innerJoin('equipmentType', 'boardLog.equipmentID', 'equipmentType.id')
+      .innerJoin('equipmentType', 'boardLog.equipmentId', 'equipmentType.id')
       .innerJoin('user', 'boardLog.boardUser', 'user.id')
       .innerJoin('role', 'user.role', 'role.id')
       .innerJoin('statusTypes', 'boardLog.status', 'statusTypes.statusID');
@@ -41,7 +41,7 @@ router.get('/:id', authenticate, async (req, res) => {
       .from('boardLog')
       .select(
         'boardLog.id',
-        'boardLog.equipmentID',
+        'boardLog.equipmentId',
         'boardLog.status',
         'boardLog.boardUser',
         'boardLog.boardComment',
@@ -50,7 +50,7 @@ router.get('/:id', authenticate, async (req, res) => {
         'user.name',
         'role.role'
       )
-      .innerJoin('equipmentType', 'boardLog.equipmentID', 'equipmentType.id')
+      .innerJoin('equipmentType', 'boardLog.equipmentId', 'equipmentType.id')
       .innerJoin('user', 'boardLog.boardUser', 'user.id')
       .innerJoin('role', 'user.role', 'role.id')
       .where({ 'boardLog.id': id });

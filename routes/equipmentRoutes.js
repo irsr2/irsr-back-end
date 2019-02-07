@@ -3,10 +3,10 @@ const router = express.Router();
 const multer = require('multer');
 
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     cb(null, './uploads/');
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     cb(null, Date.now() + file.originalname);
   }
 });
@@ -104,19 +104,18 @@ router.put(
     try {
       const { id } = req.params;
       if (req.file === undefined) {
-        if (!req.body.type || req.body.broken === undefined) {
-          res.status(responseStatus.badRequest).json({
-            message:
-              "Please enter the type of equipment and whether it's broken."
-          });
-        } else {
-          const ids = await db('equipment')
-            .where({ id })
-            .update(req.body);
-          res
-            .status(responseStatus.postCreated)
-            .json({ message: `Equipment has been updated.` });
-        }
+        let update = {};
+        if (req.body.type)
+          update.type = req.body.type;
+        if (req.body.broken !== undefined)
+          update.broken = req.body.broken;
+
+        const ids = await db('equipment')
+          .where({ id })
+          .update(update);
+        res
+          .status(responseStatus.postCreated)
+          .json({ message: `Equipment has been updated.` });
       } else {
         const newEquipment = {
           type: req.body.type,
