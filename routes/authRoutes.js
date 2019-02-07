@@ -25,12 +25,21 @@ router.post('/register', async (req, res) => {
   try {
     const userInfo = req.body;
     const hash = bcrypt.hashSync(userInfo.password, 12);
+    const users = await db('user');
     userInfo.password = hash;
-    db('user')
-      .insert(userInfo)
-      .then(ids => {
-        res.status(responseStatus.postCreated).json(ids);
+    const mapped = users.map(user => user.email);
+    if (mapped.includes(userInfo.email)) {
+      res.status(responseStatus.badRequest).json({
+        message:
+          'That username already exists. Please login or use a different username.'
       });
+    } else {
+      db('user')
+        .insert(userInfo)
+        .then(ids => {
+          res.status(responseStatus.postCreated).json(ids);
+        });
+    }
   } catch (error) {
     res.status(responseStatus.serverError).json(error);
   }
