@@ -58,12 +58,25 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const creds = req.body;
-    const user = await db('user')
+    const query = await db('user')
+      .select({
+        userid: 'user.id',
+        username: 'user.name',
+        userrole: 'user.role',
+        password: 'user.password',
+      })
       .where({ email: creds.email })
-      .innerJoin('role', 'user.role', 'role.id')
       .first();
-    if (user && bcrypt.compareSync(creds.password, user.password)) {
-      const token = generateToken(user);
+
+    console.log(`${creds.password} and ${query.password}`);
+
+    if (query && bcrypt.compareSync(creds.password, query.password)) {
+      const token = generateToken(query);
+      const user = {
+        id: query.userid,
+        name: query.username,
+        role: query.userrole
+      };
       res.status(responseStatus.success).json({ token, user });
     } else {
       res
